@@ -49,11 +49,13 @@ routes.add(method: .delete, uri: "/json/products/delete/{number}") { (request, r
     let productNumber = request.urlVariables["number"]!
     do {
         if removeProduct(productNumber: Int(productNumber)!) {
-            try response.setBody(json: ["Result":"true"])
+	    let result = ["Result":["message":"true"]]
+            try response.setBody(json: result)
             response.setHeader(.contentType, value: "application/json")
             response.completed()
         } else {
-            try response.setBody(json: ["Result":"false"])
+	    let result = ["Result":["message":"false"]]
+            try response.setBody(json: result)
             response.setHeader(.contentType, value: "application/json")
             response.completed()
         }

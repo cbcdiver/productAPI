@@ -4,14 +4,18 @@ import PerfectHTTPServer
 
 let productList = ProductList()
 
+/* ************************************************************************* */
+
 productList.add(product:Product(number: 123, name: "Name 1", price: 22.00))
 productList.add(product:Product(number: 456, name: "Name 2", price: 50.50))
 productList.add(product:Product(number: 565, name: "Name 3", price: 5.00))
 
+/* ************************************************************************* */
+
 print(productList.isUnique(field: "name", value: "Name 4"))
 
-/*
- 
+/* ************************************************************************* */
+
 let server = HTTPServer()
 server.serverPort = 8080
 server.documentRoot = "webroot"
@@ -44,7 +48,8 @@ routes.add(method: .get, uri: "/json/products/all") {
 /* ************************************************************************* */
 
 
-routes.add(method: .delete, uri: "/json/products/delete/{number}") { (request, response) in
+routes.add(method: .delete, uri: "/json/products/delete/{number}") {
+    (request, response) in
     let productNumber = Int(request.urlVariables["number"]!)!
     do {
         if productList.remove(productNumber: productNumber) {
@@ -76,5 +81,5 @@ do {
     print("Network error thrown: \(err) \(msg)")
 }
 
-*/
+
 

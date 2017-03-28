@@ -16,6 +16,15 @@ var routes = Routes()
 
 /* ************************************************************************* */
 
+
+let routesAndErrors = ["/json/": "This route needs a module.",
+                       "/json/products/":"This route needs an action.",
+                       "/json/products/delete/":"This route needs a product number to delete"]
+
+BadRoutes().add(routsAndErrors: routesAndErrors).addBadRoutes(to: &routes)
+
+/* ************************************************************************* */
+
 routes.add(method: .get, uri: "/json/products/all") {
     request, response in
     do {

@@ -7,6 +7,10 @@ class ProductList {
         theList.append(product)
     }
     
+    func isUnique<T>(field:String, value:T) -> Bool {
+        return true
+    }
+    
     func remove(productNumber:Int)->Bool {
         var index = 0
         for aProduct in theList {

@@ -2,39 +2,15 @@ import PerfectLib
 import PerfectHTTP
 import PerfectHTTPServer
 
-var products = ["products":[
-    ["number":"212", "name":"Pencil", "description":"Basic Pencil", "price":"0.99"],
-    ["number":"423", "name":"Workbook", "description":"20 page lined workbook", "price":"2.99"],
-    ["number":"100", "name":"Claculator", "description":"Scienctific Calculator", "price":"13.99"]
-    ]]
+let productList = ProductList()
+
+productList.add(product:Product(number: 123, name: "Name 1", price: 22.00))
+productList.add(product:Product(number: 456, name: "Name 2", price: 50.50))
+productList.add(product:Product(number: 565, name: "Name 3", price: 5.00))
 
 let server = HTTPServer()
 server.serverPort = 8080
 server.documentRoot = "webroot"
-
-
-/* ************************************************************************* */
-func removeProduct(productNumber: String) -> Bool {
-    var index = 0
-    for product in products["products"]! {
-        if product["number"]  == productNumber {
-            products["products"]?.remove(at: index)
-            return true
-        }
-        index+=1
-    }
-    return false
-}
-
-/* ************************************************************************* 
-func isFieldUnique(value: String, fieldName: String) -> Bool {
-    for account in names["accounts"]! {
-        if account["username"] == username {
-            return true
-        }
-    }
-    return false
- ************************************************************************* */
 
 var routes = Routes()
 
@@ -43,7 +19,7 @@ var routes = Routes()
 routes.add(method: .get, uri: "/json/products/all") {
     request, response in
     do {
-        try response.setBody(json: products)
+        try response.setBody(json: productList.asDictionary)
         response.setHeader(.contentType, value: "application/json")
         response.completed()
         
@@ -54,11 +30,12 @@ routes.add(method: .get, uri: "/json/products/all") {
 }
 /* ************************************************************************* */
 
+
 routes.add(method: .delete, uri: "/json/products/delete/{number}") { (request, response) in
-    let productNumber = request.urlVariables["number"]!
+    let productNumber = Int(request.urlVariables["number"]!)!
     do {
-        if removeProduct(productNumber: productNumber) {
-	    let result = ["Result":["message":"true"]]
+        if productList.remove(productNumber: productNumber) {
+            let result = ["Result":["message":"true"]]
             try response.setBody(json: result)
             response.setHeader(.contentType, value: "application/json")
             response.completed()
@@ -71,7 +48,6 @@ routes.add(method: .delete, uri: "/json/products/delete/{number}") { (request, r
     } catch {
         response.setBody(string: "Error Generating JSON response: \(error)")
         response.completed()
-        
     }
 }
 
@@ -86,3 +62,5 @@ do {
 } catch PerfectError.networkError(let err, let msg) {
     print("Network error thrown: \(err) \(msg)")
 }
+
+

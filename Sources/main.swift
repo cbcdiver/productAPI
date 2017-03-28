@@ -8,6 +8,10 @@ productList.add(product:Product(number: 123, name: "Name 1", price: 22.00))
 productList.add(product:Product(number: 456, name: "Name 2", price: 50.50))
 productList.add(product:Product(number: 565, name: "Name 3", price: 5.00))
 
+print(productList.isUnique(field: "name", value: "Name 4"))
+
+/*
+ 
 let server = HTTPServer()
 server.serverPort = 8080
 server.documentRoot = "webroot"
@@ -72,4 +76,5 @@ do {
     print("Network error thrown: \(err) \(msg)")
 }
 
+*/
 

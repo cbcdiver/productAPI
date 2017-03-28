@@ -7,7 +7,13 @@ class ProductList {
         theList.append(product)
     }
     
-    func isUnique<T>(field:String, value:T) -> Bool {
+    func isUnique<T:Comparable>(field:String, value:T) -> Bool {
+        let arrayOfProductDicts = self.asDictionary["products"] as! [[String:Any]]
+        for aProduct in arrayOfProductDicts  {
+            if aProduct[field] as! T == value {
+                return false
+            }
+        }
         return true
     }
     

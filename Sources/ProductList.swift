@@ -2,6 +2,7 @@ import Foundation
 
 class ProductList {
     private var theList:[Product] = []
+    private let fieldNames = ["number", "name", "price"]
     
     func add(product:Product) {
         theList.append(product)
@@ -37,5 +38,49 @@ class ProductList {
             }
             return ["products":arrayOfProducts]
         }
+    }
+    
+    func validateAndAdd(params:[String:String]) -> (Bool, String) {
+        
+        var missingFields = [String]()
+        for field in ["number", "name", "price"] {
+            if params[field] == nil {
+                missingFields.append(field)
+            }
+        }
+        
+        if missingFields.count > 0 {
+            return (false, "Can not add, the following fields are missing: " +  missingFields.joined(separator: ", "))
+        }
+        
+        var blankFields = [String]()
+        for field in ["number", "name", "price"] {
+            if params[field] == "" {
+                blankFields.append(field)
+            }
+        }
+        
+        if blankFields.count > 0 {
+            return (false, "Can not add, the following fields are blank: " +  blankFields.joined(separator: ", "))
+        }
+        
+        let name = params["name"]!
+        let productNumber = Int(params["number"]!)!
+        let price = Double(params["price"]!)!
+        
+        var duplicateFields = [String]()
+        if !productList.isUnique(field: "name", value: name) {
+            duplicateFields.append("name")
+        }
+        if !productList.isUnique(field: "number", value: productNumber) {
+            duplicateFields.append("number")
+        }
+        
+        if duplicateFields.count > 0 {
+            return (false, "Can not add, the following fields are not unique: " +  duplicateFields.joined(separator: ", "))
+        }
+        
+        self.add(product:Product(number: productNumber, name: name, price: price))
+        return (true, "Product Added")
     }
 }

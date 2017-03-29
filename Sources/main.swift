@@ -25,10 +25,6 @@ productList.add(product:Product(number: 565, name: "Name 3", price: 5.00))
 
 /* ************************************************************************* */
 
-print(productList.isUnique(field: "name", value: "Name 4"))
-
-/* ************************************************************************* */
-
 let server = HTTPServer()
 server.serverPort = 8080
 server.documentRoot = "webroot"
@@ -37,17 +33,28 @@ var routes = Routes()
 
 /* ************************************************************************* */
 
-let routesAndErrors = ["/json/": "This route needs a module.",
-                       "/json/products/":"This route needs an action.",
-                       "/json/products/delete/":"This route needs a product number to delete"]
+let routesAndErrors:[[String:Any]] = [["method":HTTPMethod.get,
+                                       "route":"/json/",
+                                       "error":"This route needs a module."],
+                                      ["method":HTTPMethod.get,
+                                       "route":"/json/products/",
+                                       "error":"This route needs an action."],
+                                      ["method":HTTPMethod.post,
+                                       "route":"/json/products/",
+                                       "error":"This route needs an action."],
+                                      ["method":HTTPMethod.delete,
+                                       "route":"/json/products/delete",
+                                       "error":"This route needs a product number to delete"]]
 
-BadRoutes().add(routsAndErrors: routesAndErrors).addBadRoutes(to: &routes)
+BadRoutes().add(routesAndErrors: routesAndErrors).addBadRoutes(to: &routes)
 
 /* ************************************************************************* */
 
 routes.add(method: .get, uri: "/json/products/all") {
     request, response in
-    send(HTTPResponse: response, withJSON: productList.asDictionary)
+    send(HTTPResponse: response, withJSON: ["Result":true,
+                                            "Message":"Data retreived",
+                                            "data":productList.asDictionary])
 }
 
 /* ************************************************************************* */
@@ -55,48 +62,37 @@ routes.add(method: .get, uri: "/json/products/all") {
 routes.add(method: .delete, uri: "/json/products/delete/{number}") {
     (request, response) in
     let productNumber = Int(request.urlVariables["number"]!)!
+    
+    let didDelete = productList.remove(productNumber: productNumber)
+    var message = "Product Deleted"
+    if !didDelete {
+        message = "Product Not Found"
+    }
+
     send(HTTPResponse: response,
-         withJSON: ["Result":productList.remove(productNumber: productNumber)])
+         withJSON: ["Result":didDelete,
+                    "Message":message,
+                    "data":""])
 }
 
 /* ************************************************************************* */
 
-routes.add(method: .post, uri: "/json/add") {
+routes.add(method: .post, uri: "/json/products/add") {
     (request, response) in
     let productNumber = request.param(name: "number")
     let name = request.param(name: "name")
     let price = request.param(name: "price")
     
-    var canAdd = true
-    var errorMessage:String!
+    let fields = ["number":request.param(name: "number")!,
+                  "name": request.param(name: "name")!,
+                  "price": request.param(name: "price")!]
     
-    var missingFields = [String]()
-    for field in ["number", "name", "price"] {
-        if request.param(name: field) == nil {
-            missingFields.append(field)
-        }
-    }
+    let (wasAdded, message) = productList.validateAndAdd(params: fields)
     
-    if missingFields.count > 0 {
-        canAdd = false
-        errorMessage = "Can not add, the following fields are missing: " +
-            missingFields.joined(separator: ", ")
-    }
-    
-    if canAdd {
-        var blankFields = [String]()
-        for field in ["number", "name", "price"] {
-            if request.param(name: field) == "" {
-                blankFields.append(field)
-            }
-        }
-        
-        if blankFields.count > 0 {
-            canAdd = false
-            errorMessage = "Can not add, the following fields are blank: " +
-                blankFields.joined(separator: ", ")
-        }
-    }
+    send(HTTPResponse: response,
+         withJSON: ["Result":wasAdded,
+                    "Message":message,
+                    "data":""])
 }
 
 /* ************************************************************************* */

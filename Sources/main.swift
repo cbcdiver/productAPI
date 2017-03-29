@@ -79,10 +79,7 @@ routes.add(method: .delete, uri: "/json/products/delete/{number}") {
 
 routes.add(method: .post, uri: "/json/products/add") {
     (request, response) in
-    let productNumber = request.param(name: "number")
-    let name = request.param(name: "name")
-    let price = request.param(name: "price")
-    
+
     let fields = ["number":request.param(name: "number")!,
                   "name": request.param(name: "name")!,
                   "price": request.param(name: "price")!]

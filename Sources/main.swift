@@ -64,7 +64,7 @@ routes.add(method: .delete, uri: "/json/products/delete/{number}") {
     let productNumber = Int(request.urlVariables["number"]!)!
     
     let didDelete = productList.remove(productNumber: productNumber)
-    var message = "Product Deleted"
+    var message = "Product \(productNumber) Deleted"
     if !didDelete {
         message = "Product Not Found"
     }

@@ -40,11 +40,11 @@ class ProductList {
         }
     }
     
-    func validateAndAdd(params:[String:String]) -> (Bool, String) {
+    func validateAndAdd(params:[String:String?]) -> (Bool, String) {
         
         var missingFields = [String]()
         for field in ["number", "name", "price"] {
-            if params[field] == nil {
+            if params[field]! == nil {
                 missingFields.append(field)
             }
         }
@@ -55,7 +55,7 @@ class ProductList {
         
         var blankFields = [String]()
         for field in ["number", "name", "price"] {
-            if params[field] == "" {
+            if params[field]! == "" {
                 blankFields.append(field)
             }
         }
@@ -64,9 +64,9 @@ class ProductList {
             return (false, "Can not add, the following fields are blank: " +  blankFields.joined(separator: ", "))
         }
         
-        let name = params["name"]!
-        let productNumber = Int(params["number"]!)!
-        let price = Double(params["price"]!)!
+        let name = params["name"]!!
+        let productNumber = Int(params["number"]!!)!
+        let price = Double(params["price"]!!)!
         
         var duplicateFields = [String]()
         if !productList.isUnique(field: "name", value: name) {

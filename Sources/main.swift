@@ -80,10 +80,10 @@ routes.add(method: .delete, uri: "/json/products/delete/{number}") {
 routes.add(method: .post, uri: "/json/products/add") {
     (request, response) in
 
-    let fields = ["number":request.param(name: "number")!,
-                  "name": request.param(name: "name")!,
-                  "price": request.param(name: "price")!]
-    
+    let fields = ["number":request.param(name: "number"),
+                  "name": request.param(name: "name"),
+                  "price": request.param(name: "price")]
+
     let (wasAdded, message) = productList.validateAndAdd(params: fields)
     
     send(HTTPResponse: response,

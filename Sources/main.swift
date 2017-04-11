@@ -19,9 +19,14 @@ func send(HTTPResponse response:HTTPResponse, withJSON theJSON:[String:Any]) {
 
 let productList = ProductList()
 
-productList.add(product:Product(number: 123, name: "Name 1", price: 22.00))
-productList.add(product:Product(number: 456, name: "Name 2", price: 50.50))
-productList.add(product:Product(number: 565, name: "Name 3", price: 5.00))
+func reset() {
+    productList = ProductList()
+    productList.add(product:Product(number: 123, name: "Name 1", price: 22.00))
+    productList.add(product:Product(number: 456, name: "Name 2", price: 50.50))
+    productList.add(product:Product(number: 565, name: "Name 3", price: 5.00))
+}
+
+reset()
 
 /* ************************************************************************* */
 
@@ -49,6 +54,21 @@ let routesAndErrors:[[String:Any]] = [["method":HTTPMethod.get,
 BadRoutes().add(routesAndErrors: routesAndErrors).addBadRoutes(to: &routes)
 
 /* ************************************************************************* */
+
+routes.add(method: .get, uri: "/json/products/all") {
+    request, response in
+    send(HTTPResponse: response, withJSON: ["Result":true,
+                                            "Message":"Data retreived",
+                                            "data":productList.asDictionary])
+}
+
+routes.add(method: .get, uri: "/json/products/reset") {
+    request, response in
+    reset()
+    send(HTTPResponse: response, withJSON: ["Result":true,
+                                            "Message":"Data retreived",
+                                            "data":""])
+}
 
 routes.add(method: .get, uri: "/json/products/all") {
     request, response in

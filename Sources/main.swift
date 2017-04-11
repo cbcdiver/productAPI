@@ -17,7 +17,7 @@ func send(HTTPResponse response:HTTPResponse, withJSON theJSON:[String:Any]) {
 
 /* ************************************************************************* */
 
-let productList = ProductList()
+var productList = ProductList()
 
 func reset() {
     productList = ProductList()
@@ -66,7 +66,7 @@ routes.add(method: .get, uri: "/json/products/reset") {
     request, response in
     reset()
     send(HTTPResponse: response, withJSON: ["Result":true,
-                                            "Message":"Data retreived",
+                                            "Message":"Data reset to starting state",
                                             "data":""])
 }
 
